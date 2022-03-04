@@ -1,3 +1,4 @@
+---
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
@@ -15,7 +16,7 @@ spec:
         name: Agent - Metrics Gathered
         queries:
           - query: |-
-                from(bucket: "Telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "internal_agent")
                   |> filter(fn: (r) => r._field == "metrics_gathered")
@@ -45,7 +46,7 @@ spec:
         queries:
           - query: |-
                 import "experimental/aggregate"
-                  from(bucket: "Telegraf")
+                  from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "internal_agent")
                   |> filter(fn: (r) => r._field == "metrics_gathered" or r._field == "metrics_written")
@@ -79,7 +80,7 @@ spec:
         queries:
           - query: |-
                 import "experimental/aggregate"
-                from(bucket: "Telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "internal_gather")
                   |> filter(fn: (r) => r._field == "metrics_gathered")
@@ -113,7 +114,7 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "Telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "internal_write")
                   |> filter(fn: (r) => r._field == "buffer_size")
@@ -146,7 +147,7 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "Telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "internal_memstats")
                   |> filter(fn: (r) => r._field == "mallocs")
@@ -166,7 +167,7 @@ spec:
         name: Agent - Metrics Written
         queries:
           - query: |-
-                from(bucket: "Telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "internal_agent")
                   |> filter(fn: (r) => r._field == "metrics_written")
@@ -197,7 +198,7 @@ spec:
         queries:
           - query: |-
                 import "experimental/aggregate"
-                from(bucket: "Telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "internal_agent")
                   |> filter(fn: (r) => r._field == "gather_errors")
@@ -234,7 +235,7 @@ spec:
         queries:
           - query: |-
                 import "experimental/aggregate"
-                from(bucket: "Telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "internal_gather")
                   |> filter(fn: (r) => r._field == "errors")
@@ -270,7 +271,7 @@ spec:
         queries:
           - query: |-
                 import "experimental/aggregate"
-                from(bucket: "Telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "internal_write")
                   |> filter(fn: (r) => r._field == "errors")
@@ -305,7 +306,7 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "Telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "internal_memstats")
                   |> filter(fn: (r) => r._field == "num_gc")
@@ -367,7 +368,7 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "Telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "internal_agent")
                   |> filter(fn: (r) => r._field == "metrics_dropped")
@@ -404,7 +405,7 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "Telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "internal_gather")
                   |> filter(fn: (r) => r._field == "gather_time_ns")
@@ -441,7 +442,7 @@ spec:
         queries:
           - query: |-
                 import "date"
-                from(bucket: "Telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "internal_write")
                   |> filter(fn: (r) => r._field == "write_time_ns")
@@ -475,7 +476,7 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "Telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "internal_memstats")
                   |> filter(fn: (r) => r._field == "heap_in_use_bytes")
@@ -502,7 +503,7 @@ spec:
           - query: |-
                 import "experimental/aggregate"
                 import "experimental/query"
-                from(bucket: "Telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._field == "metrics_dropped")
                   |> aggregate.rate(every: v.windowPeriod, unit: 1s)
@@ -512,6 +513,20 @@ spec:
         xPos: 9
         yCol: _value
     description: ""
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+  name: docker-template-bucket-variable
+spec:
+  language: flux
+  name: bucket
+  query: |-
+      buckets()
+        |> filter(fn: (r) => r.name !~ /^_/)
+        |> rename(columns: {name: "_value"})
+        |> keep(columns: ["_value"])
+  type: query
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Telegraf
@@ -533,14 +548,14 @@ spec:
 
         [[inputs.internal]]
           collect_memstats = true
-        
+
         [[outputs.influxdb_v2]]
           urls = ["${INFLUX_HOST}"]
           token = "${INFLUX_TOKEN}"
           organization = "${INFLUX_ORG}"
           ## Destination bucket to write into.
           bucket = "${TELEGRAF_BUCKET}"
-    description: A set of plugins for monitoring your Linux system.  
+    description: A set of plugins for monitoring your Linux system.
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Bucket
